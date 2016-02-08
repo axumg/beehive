@@ -1,0 +1,44 @@
+<template name="layout">
+  <body>
+  
+    <h1>Welcome to my Beehive</h1>
+    
+      {{>yield}}
+  
+  </body>
+</template>
+
+<template name="observation">
+  <div class='col-xs-3'>
+  <form>
+    <div class="form-group">
+      <label for="hiveName">Hive Name</label>
+      <input type="text" class="form-contol" name="hiveName" /><br><br>
+    </div>
+    
+    <div class="form-group">
+      <label for="observationDate">Observation Date</label>
+      <input type="DATE" class="form-contol" name="observationDate" /><br><br>
+    </div>
+    
+    <div class="form-group">
+      <label for="miteCount">Mite Count</label>
+      <input type="number" class="form-contol" name="miteCount" /><br><br>
+    </div>
+    
+    <div class="form-group">
+      <label for="duration">Duration</label>
+      <input type="number" class="form-contol" name="duration" /><br><br>
+    </div> 
+     
+  <button type="submit" class="btn-ptn-primary">Submit</button>
+  
+  </form>
+  
+  {{#each observation}}
+    <p><a href="{{pathFor route='observation.show'}}"><strong>{{name}}</strong>: {{observationDate}}  -  {{duration}}  -  {{miteCount}} - {{ createdOn }}</a></p>
+  
+  {{/each}}
+  
+  </div>
+</template>
