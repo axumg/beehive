@@ -1,49 +1,44 @@
 Observation = new Mongo.Collection('observation');
 
-Router.route('/', function () {
-  this.render('observation'); //render guestbook template
-  this.layout('layout');    //set the main Layout template  
+Router.route('/home', function () {
+  this.render('form');
+  this.layout('layout');      
   });
 
-Router.route('/about', function () {
-  this.render('about');
+Router.route('/admin', function () {
+  this.render('observation');
   this.layout('layout');
 });
 
-Router.route('/hiveName/:_id', function () {
+Router.route('/hive/:name', function () {
  this.render('hiveName', {
    data: function (){
-     return Observation.findOne({_id: this.params._id});
+     return {
+      hiveName: Observation.find({name: this.params.name})
+     }
    }
   });
   
     this.layout('layout');
   }, {
-    hiveName: 'hiveName.show'
+    name: 'hiveName.show'
   });
 
 if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
+ Meteor.subscribe("observation");
 
   Template.observation.helpers({
-    counter: function () {
-      return Session.get('counter');
-    },
-    
-    observation: function () {
-      return Observation.find({}).fetch();
-    }   
-    
+    'observation': function () {
+      return Observation.find({}, {sort: {createdOn: -1}}) || {};
+    },    
   });
-
-  Template.observation.events(
+  
+  Template.form.events(
     {   //events takes an object, this is an object
       "submit form": function(event)
       {
         event.preventDefault();
-        //alert('You clicked submit!');
-                
+                       
         var hiveNameBox = $(event.target).find('input[name=hiveName]');
         var hiveName = hiveNameBox.val();
         
@@ -69,18 +64,13 @@ if (Meteor.isClient) {
         observationDateBox.val('');
         miteCountBox.val('');
         durationBox.val('');
-        
-           
-        
-      }
-    
+       }    
     }
   );
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
-    // code to run on server at startup
   });
   
   Meteor.publish("observation", function (){
